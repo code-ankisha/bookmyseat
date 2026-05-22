@@ -1,0 +1,73 @@
+{% extends "users/basic.html" %}
+{% block title %}Login - BookMySeat{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-5">
+      <div class="text-center mb-4">
+        <i class="fas fa-film fa-3x mb-2" style="color:var(--red)"></i>
+        <h2 style="font-family:'Nunito',sans-serif;font-weight:900;color:#fff;">Welcome Back!</h2>
+        <p style="color:var(--text-muted);">Login to continue booking tickets</p>
+      </div>
+      <div class="auth-card">
+        <div class="card-header">
+          <h5 class="mb-0 text-white"><i class="fas fa-right-to-bracket me-2"></i>Log In</h5>
+        </div>
+        <div class="card-body p-4" style="background:var(--card-bg);">
+          <form method="POST" action="{% url 'login' %}">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label class="form-label">Username</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                {{ form.username }}
+              </div>
+              {% if form.username.errors %}
+              <div class="text-danger mt-1" style="font-size:0.8rem;">{{ form.username.errors.0 }}</div>
+              {% endif %}
+            </div>
+            <div class="mb-4">
+              <label class="form-label">Password</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                {{ form.password }}
+                <button class="btn" type="button" id="togglePwd" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text-muted);">
+                  <i class="fas fa-eye" id="eyeIcon"></i>
+                </button>
+              </div>
+              {% if form.non_field_errors %}
+              <div class="text-danger mt-1" style="font-size:0.8rem;">{{ form.non_field_errors.0 }}</div>
+              {% endif %}
+            </div>
+            <button type="submit" class="btn btn-primary w-100 py-2">
+              <i class="fas fa-right-to-bracket me-2"></i>Login
+            </button>
+          </form>
+        </div>
+        <div class="card-footer p-3 text-center">
+          <a href="{% url 'password_reset' %}" style="color:var(--text-muted);font-size:0.875rem;text-decoration:none;">
+            <i class="fas fa-key me-1"></i>Forgot Password?
+          </a>
+          <hr style="border-color:rgba(255,255,255,0.06);">
+          <span style="color:var(--text-muted);font-size:0.875rem;">Don't have an account?</span>
+          <a href="{% url 'register' %}"> Sign Up</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Add form-control class to Django form fields
+  document.querySelectorAll('input').forEach(el => el.classList.add('form-control'));
+  document.getElementById('togglePwd').addEventListener('click', function() {
+    const pwd = document.getElementById('{{ form.password.id_for_label }}');
+    const icon = document.getElementById('eyeIcon');
+    if (pwd.type === 'password') { pwd.type = 'text'; icon.classList.replace('fa-eye','fa-eye-slash'); }
+    else { pwd.type = 'password'; icon.classList.replace('fa-eye-slash','fa-eye'); }
+  });
+</script>
+{% endblock %}

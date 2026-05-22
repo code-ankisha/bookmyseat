@@ -1,0 +1,135 @@
+{% extends "users/basic.html" %}
+{% block title %}{{ movie.name }} - Select Theatre{% endblock %}
+
+{% block extra_css %}
+<style>
+  .movie-hero { background:var(--card-bg); border-radius:16px; padding:1.5rem; border:1px solid rgba(255,255,255,0.07); margin-bottom:2rem; }
+  .movie-hero img { width:100px; height:140px; object-fit:cover; border-radius:10px; }
+  .theater-card { background:var(--card-bg); border-radius:14px; border:1px solid rgba(255,255,255,0.07); padding:1.25rem 1.5rem; margin-bottom:1rem; transition:border-color 0.2s; }
+  .theater-card:hover { border-color:rgba(230,57,70,0.4); }
+  .theater-name { font-family:'Nunito',sans-serif; font-weight:800; font-size:1.1rem; color:#fff; }
+  .theater-meta span { color:var(--text-muted); font-size:0.8rem; margin-right:1rem; }
+  .time-btn { background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.15); color:#fff; border-radius:8px; padding:8px 18px; font-size:0.85rem; font-weight:600; text-decoration:none; transition:all 0.2s; display:inline-block; }
+  .time-btn:hover { background:var(--red); border-color:var(--red); color:#fff; transform:translateY(-2px); }
+  .availability-bar { height:4px; background:rgba(255,255,255,0.08); border-radius:2px; margin-top:8px; }
+  .availability-fill { height:100%; background:var(--success); border-radius:2px; }
+  .availability-fill.low { background:var(--red); }
+  .no-theater { background:var(--card-bg); border-radius:16px; padding:4rem 2rem; text-align:center; border:1px solid rgba(255,255,255,0.06); }
+  .breadcrumb { background:transparent; padding:0; }
+  .breadcrumb-item a { color:var(--accent); text-decoration:none; }
+  .breadcrumb-item.active { color:var(--text-muted); }
+  .breadcrumb-item+.breadcrumb-item::before { color:var(--text-muted); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <!-- BREADCRUMB -->
+  <nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/"><i class="fas fa-home me-1"></i>Home</a></li>
+      <li class="breadcrumb-item"><a href="/movies/">Movies</a></li>
+      <li class="breadcrumb-item active">{{ movie.name }}</li>
+    </ol>
+  </nav>
+
+  <!-- MOVIE HERO -->
+  <div class="movie-hero">
+    <div class="d-flex gap-3 align-items-start flex-wrap">
+      <img src="{{ movie.image.url }}" alt="{{ movie.name }}">
+      <div class="flex-grow-1">
+        <h2 style="font-family:'Nunito',sans-serif;font-weight:900;color:#fff;">{{ movie.name }}</h2>
+        <div class="d-flex gap-2 flex-wrap mb-2">
+          <span class="rating-badge"><i class="fas fa-star me-1"></i>{{ movie.rating }}/10</span>
+          {% if movie.genre %}<span class="genre-badge">{{ movie.genre }}</span>{% endif %}
+          {% if movie.language %}
+          <span style="background:rgba(116,185,255,0.1);color:#74b9ff;border:1px solid rgba(116,185,255,0.2);border-radius:20px;padding:2px 10px;font-size:0.75rem;font-weight:500;">
+            {{ movie.language }}
+          </span>
+          {% endif %}
+        </div>
+        {% if movie.cast %}
+        <p style="color:var(--text-muted);font-size:0.875rem;margin-bottom:6px;">
+          <i class="fas fa-users me-2" style="color:var(--red)"></i><strong style="color:var(--text-light);">Cast:</strong> {{ movie.cast }}
+        </p>
+        {% endif %}
+        {% if movie.description %}
+        <p style="color:var(--text-muted);font-size:0.85rem;">{{ movie.description }}</p>
+        {% endif %}
+        <div class="d-flex gap-3 flex-wrap mt-2" style="font-size:0.82rem;color:var(--text-muted);">
+          {% if movie.duration %}<span><i class="fas fa-clock me-1" style="color:var(--accent)"></i>{{ movie.duration_display }}</span>{% endif %}
+          {% if movie.release_date %}<span><i class="fas fa-calendar me-1" style="color:var(--accent)"></i>{{ movie.release_date }}</span>{% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FORMAT FILTERS -->
+  <div class="d-flex gap-2 mb-3 flex-wrap">
+    <span style="color:var(--text-muted);font-size:0.875rem;align-self:center;"><i class="fas fa-filter me-1"></i>Format:</span>
+    <button class="time-btn active">All</button>
+    <button class="time-btn">2D</button>
+    <button class="time-btn">3D</button>
+    <button class="time-btn">IMAX</button>
+  </div>
+
+  <h4 style="font-family:'Nunito',sans-serif;font-weight:800;margin-bottom:1rem;">
+    <i class="fas fa-building me-2" style="color:var(--red)"></i>Select Theatre & Showtime
+  </h4>
+
+  <!-- THEATER LIST -->
+  {% if theaters %}
+    {% for theater in theaters %}
+    <div class="theater-card">
+      <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+        <div>
+          <div class="theater-name"><i class="fas fa-map-marker-alt me-2" style="color:var(--red)"></i>{{ theater.name }}</div>
+          {% if theater.location %}
+          <div class="theater-meta mt-1">
+            <span><i class="fas fa-location-dot me-1"></i>{{ theater.location }}</span>
+          </div>
+          {% endif %}
+          <div class="d-flex gap-3 mt-2 flex-wrap" style="font-size:0.78rem;color:var(--text-muted);">
+            <span><i class="fas fa-mobile-alt me-1" style="color:var(--success)"></i>M-Ticket</span>
+            <span><i class="fas fa-utensils me-1" style="color:var(--accent)"></i>Food & Beverages</span>
+            <span><i class="fas fa-parking me-1" style="color:#74b9ff"></i>Parking</span>
+            <span><i class="fas fa-wheelchair me-1" style="color:#a29bfe"></i>Accessible</span>
+          </div>
+        </div>
+        <div class="text-end" style="font-size:0.8rem;color:var(--text-muted);">
+          {% with avail=theater.available_seats_count %}
+          <span style="color:{% if avail < 10 %}var(--red){% else %}var(--success){% endif %}">
+            <i class="fas fa-chair me-1"></i>{{ avail }} seats available
+          </span>
+          {% endwith %}
+        </div>
+      </div>
+
+      <!-- SHOWTIME -->
+      <div class="d-flex gap-2 flex-wrap">
+        <a href="{% url 'book_seats' theater.id %}" class="time-btn">
+          <i class="fas fa-clock me-1" style="color:var(--accent)"></i>
+          {{ theater.time|date:"g:i A" }}
+          <div style="font-size:0.7rem;color:var(--text-muted);font-weight:400;">{{ theater.time|date:"d M, D" }}</div>
+        </a>
+      </div>
+
+      <!-- CANCELLATION NOTE -->
+      <div class="mt-2" style="font-size:0.75rem;color:var(--text-muted);">
+        <i class="fas fa-circle-info me-1" style="color:var(--accent)"></i>
+        Non-cancellable &nbsp;|&nbsp; <i class="fas fa-shield-halved me-1" style="color:var(--success)"></i>Safe & Secure Booking
+      </div>
+    </div>
+    {% endfor %}
+  {% else %}
+    <div class="no-theater">
+      <i class="fas fa-building-slash fa-4x mb-3" style="color:var(--red);opacity:0.4"></i>
+      <h5 style="color:var(--text-muted);">No theatres available</h5>
+      <p style="color:var(--text-muted);font-size:0.875rem;">No shows scheduled for this movie right now. Check back later!</p>
+      <a href="/movies/" class="btn btn-primary mt-2">Browse Other Movies</a>
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}

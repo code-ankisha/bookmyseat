@@ -1,0 +1,161 @@
+{% extends "users/basic.html" %}
+{% block title %}BookMySeat - Book Movie Tickets Online{% endblock %}
+
+{% block extra_css %}
+<style>
+  .hero-carousel .carousel-item img { height: 400px; object-fit: cover; }
+  .carousel-control-prev, .carousel-control-next {
+    width: 40px; height: 40px; background: rgba(230,57,70,0.8);
+    border-radius: 50%; top: 50%; transform: translateY(-50%); margin: 0 1rem;
+  }
+  .genre-pill {
+    background: rgba(255,255,255,0.06); color: var(--text-light);
+    border: 1px solid rgba(255,255,255,0.1); border-radius: 20px;
+    padding: 6px 16px; font-size: 0.82rem; font-weight: 500;
+    cursor: pointer; transition: all 0.2s; text-decoration: none; display: inline-block;
+  }
+  .genre-pill:hover { background: var(--red); color: #fff; border-color: var(--red); }
+  .not-auth-banner {
+    background: linear-gradient(135deg, rgba(230,57,70,0.15), rgba(244,162,97,0.1));
+    border: 1px solid rgba(230,57,70,0.3); border-radius: 12px; padding: 1.2rem 1.5rem;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+  }
+  .event-card {
+    background: var(--card-bg); border-radius: 12px; overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.06); transition: all 0.25s;
+  }
+  .event-card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,0.4); }
+  .event-card img { width:100%; height: 180px; object-fit: cover; }
+  .event-card .info { padding: 12px; }
+  .event-card .info h6 { color:#fff; font-weight:600; font-size:0.9rem; margin-bottom:4px; }
+  .event-card .info small { color: var(--text-muted); }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- HERO CAROUSEL -->
+<div id="heroCarousel" class="carousel slide hero-carousel" data-bs-ride="carousel">
+  <div class="carousel-indicators">
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
+  </div>
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img src="https://assets-in.bmscdn.com/promotions/cms/creatives/1728390794440_bandlanddesktop.jpg" class="d-block w-100" alt="Banner 1">
+    </div>
+    <div class="carousel-item">
+      <img src="https://assets-in.bmscdn.com/promotions/cms/creatives/1726036566435_playcardnewweb.jpg" class="d-block w-100" alt="Banner 2">
+    </div>
+    <div class="carousel-item">
+      <img src="https://assets-in.bmscdn.com/promotions/cms/creatives/1729172081740_sorcar1240x300.jpg" class="d-block w-100" alt="Banner 3">
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+    <i class="fas fa-chevron-left text-white"></i>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+    <i class="fas fa-chevron-right text-white"></i>
+  </button>
+</div>
+
+<div class="container py-4">
+  {% if not user.is_authenticated %}
+  <div class="not-auth-banner mb-4">
+    <div>
+      <i class="fas fa-ticket-alt me-2" style="color:var(--accent)"></i>
+      <strong>Sign in to book tickets</strong>
+      <span class="text-muted ms-2" style="font-size:0.875rem;">Get personalised recommendations and manage bookings</span>
+    </div>
+    <div class="d-flex gap-2">
+      <a href="{% url 'login' %}" class="btn btn-primary btn-sm px-4">Login</a>
+      <a href="{% url 'register' %}" class="btn btn-outline-primary btn-sm px-4">Register</a>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- GENRE PILLS -->
+  <div class="d-flex gap-2 flex-wrap mb-3">
+    <a href="#" class="genre-pill">🎬 All</a>
+    <a href="#" class="genre-pill">🔥 Action</a>
+    <a href="#" class="genre-pill">💘 Romance</a>
+    <a href="#" class="genre-pill">😂 Comedy</a>
+    <a href="#" class="genre-pill">👻 Horror</a>
+    <a href="#" class="genre-pill">🎭 Drama</a>
+    <a href="#" class="genre-pill">🚀 Sci-Fi</a>
+  </div>
+
+  <!-- NOW SHOWING -->
+  <div class="section-title"><i class="fas fa-fire title-icon"></i> Now Showing</div>
+  <div class="row g-3">
+    {% if movies %}
+      {% for movie in movies|slice:":8" %}
+      <div class="col-6 col-md-3">
+        <a href="{% url 'theater_list' movie.id %}" class="text-decoration-none">
+          <div class="movie-card">
+            <img src="{{ movie.image.url }}" alt="{{ movie.name }}" loading="lazy">
+            <div class="card-body">
+              <div class="card-title">{{ movie.name }}</div>
+              <div class="d-flex align-items-center gap-2 flex-wrap">
+                <span class="rating-badge"><i class="fas fa-star me-1"></i>{{ movie.rating }}</span>
+                {% if movie.genre %}<span class="genre-badge">{{ movie.genre }}</span>{% endif %}
+              </div>
+              {% if movie.language %}
+              <div class="mt-1"><small style="color:var(--text-muted);font-size:0.75rem;">{{ movie.language }}</small></div>
+              {% endif %}
+            </div>
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="col-12">
+        <div style="background:var(--card-bg);border-radius:12px;padding:3rem;text-align:center;border:1px solid rgba(255,255,255,0.06);">
+          <i class="fas fa-film fa-3x mb-3" style="color:var(--red);opacity:0.5"></i>
+          <h5 style="color:var(--text-muted);">No movies available yet</h5>
+          <p style="color:var(--text-muted);font-size:0.875rem;">Add movies from the admin panel to see them here.</p>
+          <a href="/admin/" class="btn btn-primary mt-2">Go to Admin</a>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+  {% if movies %}
+  <div class="text-center mt-3">
+    <a href="/movies/" class="btn btn-outline-primary px-5">View All Movies <i class="fas fa-arrow-right ms-2"></i></a>
+  </div>
+  {% endif %}
+
+  <!-- LIVE EVENTS -->
+  <div class="section-title mt-5"><i class="fas fa-bolt title-icon"></i> The Best of Live Events</div>
+  <div class="row g-3">
+    {% for i in "123456" %}
+    <div class="col-6 col-md-2">
+      <div class="event-card">
+        <img src="https://storage.googleapis.com/a1aa/image/wQXDIlqv4XoxGtNEO9XkSKBZYe9IuDePUWEcd0WwqcNzY5nTA.jpg" alt="Event">
+        <div class="info">
+          <h6>Live Event {{ forloop.counter }}</h6>
+          <small><i class="fas fa-map-marker-alt me-1" style="color:var(--red)"></i>Mumbai</small>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- PREMIERES -->
+  <div class="section-title mt-5"><i class="fas fa-crown title-icon"></i> Premieres</div>
+  <div class="row g-3">
+    {% for i in "1234" %}
+    <div class="col-6 col-md-3">
+      <div class="event-card">
+        <img src="https://storage.googleapis.com/a1aa/image/FJ64xM1AcD6FHJgA4oa0cGJSW3VudRGcPJEJxZG7eUNjs8zJA.jpg" alt="Premiere" style="height:260px;">
+        <div class="info">
+          <h6>Premiere {{ forloop.counter }}</h6>
+          <small style="color:var(--accent)"><i class="fas fa-star me-1"></i>Exclusive Screening</small>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+</div>
+{% endblock %}
