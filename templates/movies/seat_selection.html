@@ -3,27 +3,177 @@
 
 {% block extra_css %}
 <style>
-  .seat-page-wrap { max-width:860px; margin:0 auto; }
-  .show-info-card { background:var(--card-bg); border-radius:14px; border:1px solid rgba(255,255,255,0.07); padding:1.25rem 1.5rem; margin-bottom:1.5rem; }
-  .screen-bar { background:linear-gradient(90deg,transparent,rgba(230,57,70,0.4),rgba(230,57,70,0.6),rgba(230,57,70,0.4),transparent); height:6px; border-radius:3px; margin-bottom:2rem; }
-  .screen-label { text-align:center; color:var(--text-muted); font-size:0.75rem; letter-spacing:3px; text-transform:uppercase; margin-bottom:1.5rem; }
-  .seats-grid { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin-bottom:2rem; }
-  .seat { width:38px; height:38px; border-radius:8px 8px 4px 4px; border:2px solid rgba(42,157,143,0.6); background:rgba(42,157,143,0.08); color:var(--text-light); font-size:0.7rem; font-weight:600; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.2s; position:relative; user-select:none; }
-  .seat:hover:not(.booked) { background:rgba(42,157,143,0.3); border-color:var(--success); transform:scale(1.1); }
-  .seat.selected { background:var(--success) !important; border-color:var(--success) !important; color:#fff !important; transform:scale(1.05); }
-  .seat.booked { background:rgba(255,255,255,0.04) !important; border-color:rgba(255,255,255,0.08) !important; color:rgba(255,255,255,0.2) !important; cursor:not-allowed; }
-  .seat input[type="checkbox"] { display:none; }
-  .seat-label { cursor:pointer; width:100%; height:100%; display:flex; align-items:center; justify-content:center; }
-  .legend-dot { width:28px; height:28px; border-radius:6px 6px 3px 3px; display:inline-block; }
-  .legend-available { background:rgba(42,157,143,0.08); border:2px solid rgba(42,157,143,0.6); }
-  .legend-selected  { background:var(--success); border:2px solid var(--success); }
-  .legend-booked    { background:rgba(255,255,255,0.04); border:2px solid rgba(255,255,255,0.1); }
-  .booking-summary { background:var(--card-bg); border-radius:14px; border:1px solid rgba(255,255,255,0.07); padding:1.25rem 1.5rem; position:sticky; top:80px; }
-  .summary-item { display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid rgba(255,255,255,0.05); font-size:0.875rem; }
-  .summary-item:last-child { border-bottom:none; }
-  .row-label { writing-mode:horizontal-tb; color:var(--text-muted); font-size:0.7rem; width:20px; text-align:center; flex-shrink:0; align-self:center; }
-  .seats-row { display:flex; align-items:center; gap:8px; margin-bottom:8px; justify-content:center; }
-  @media(max-width:576px) { .seat { width:30px; height:30px; font-size:0.6rem; } }
+  .seat-page-wrap {
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  .show-info-card {
+    background: var(--card-bg);
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .screen-bar {
+    background: linear-gradient(90deg, transparent, rgba(230, 57, 70, 0.4), rgba(230, 57, 70, 0.6), rgba(230, 57, 70, 0.4), transparent);
+    height: 6px;
+    border-radius: 3px;
+    margin-bottom: 2rem;
+  }
+
+  .screen-label {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+
+  .seats-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 2rem;
+  }
+
+  .seat {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px 8px 4px 4px;
+    border: 2px solid rgba(42, 157, 143, 0.6);
+    background: rgba(42, 157, 143, 0.08);
+    color: var(--text-light);
+    font-size: 0.7rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    user-select: none;
+  }
+
+  .seat:hover:not(.booked) {
+    background: rgba(42, 157, 143, 0.3);
+    border-color: var(--success);
+    transform: scale(1.1);
+  }
+
+  .seat.selected {
+    background: var(--success) !important;
+    border-color: var(--success) !important;
+    color: #fff !important;
+    transform: scale(1.05);
+  }
+
+  .seat.booked {
+    background: rgba(255, 255, 255, 0.04) !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+    color: rgba(255, 255, 255, 0.2) !important;
+    cursor: not-allowed;
+  }
+
+  .seat.locked {
+    background: rgba(255, 193, 7, 0.15) !important;
+    border-color: #ffc107 !important;
+    color: #ffc107 !important;
+    cursor: not-allowed;
+  }
+
+  .seat input[type="checkbox"] {
+    display: none;
+  }
+
+  .seat-label {
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .legend-dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px 6px 3px 3px;
+    display: inline-block;
+  }
+
+  .legend-available {
+    background: rgba(42, 157, 143, 0.08);
+    border: 2px solid rgba(42, 157, 143, 0.6);
+  }
+
+  .legend-selected {
+    background: var(--success);
+    border: 2px solid var(--success);
+  }
+
+  .legend-booked {
+    background: rgba(255, 255, 255, 0.04);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .legend-locked {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background: rgba(255, 193, 7, 0.15);
+    border: 2px solid #ffc107;
+  }
+
+  .booking-summary {
+    background: var(--card-bg);
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    padding: 1.25rem 1.5rem;
+    position: sticky;
+    top: 80px;
+  }
+
+  .summary-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.875rem;
+  }
+
+  .summary-item:last-child {
+    border-bottom: none;
+  }
+
+  .row-label {
+    writing-mode: horizontal-tb;
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    width: 20px;
+    text-align: center;
+    flex-shrink: 0;
+    align-self: center;
+  }
+
+  .seats-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    justify-content: center;
+  }
+
+  @media (max-width: 576px) {
+    .seat {
+      width: 30px;
+      height: 30px;
+      font-size: 0.6rem;
+    }
+  }
 </style>
 {% endblock %}
 
@@ -33,11 +183,17 @@
 
     <!-- BREADCRUMB -->
     <nav aria-label="breadcrumb" class="mb-3">
-      <ol class="breadcrumb" style="background:transparent;padding:0;">
-        <li class="breadcrumb-item"><a href="/" style="color:var(--accent);text-decoration:none;">Home</a></li>
-        <li class="breadcrumb-item"><a href="/movies/" style="color:var(--accent);text-decoration:none;">Movies</a></li>
-        <li class="breadcrumb-item"><a href="{% url 'theater_list' theater.movie.id %}" style="color:var(--accent);text-decoration:none;">{{ theater.movie.name }}</a></li>
-        <li class="breadcrumb-item active" style="color:var(--text-muted);">Select Seats</li>
+      <ol class="breadcrumb" style="background: transparent; padding: 0;">
+        <li class="breadcrumb-item">
+          <a href="/" style="color: var(--accent); text-decoration: none;">Home</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="/movies/" style="color: var(--accent); text-decoration: none;">Movies</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="{% url 'theater_list' theater.movie.id %}" style="color: var(--accent); text-decoration: none;">{{ theater.movie.name }}</a>
+        </li>
+        <li class="breadcrumb-item active" style="color: var(--text-muted);">Select Seats</li>
       </ol>
     </nav>
 
@@ -45,26 +201,29 @@
     <div class="show-info-card">
       <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
         <div>
-          <h4 style="font-family:'Nunito',sans-serif;font-weight:900;color:#fff;margin-bottom:4px;">{{ theater.movie.name }}</h4>
-          <p style="color:var(--text-muted);margin-bottom:6px;font-size:0.875rem;">
-            <i class="fas fa-building me-2" style="color:var(--red)"></i>{{ theater.name }}
+          <h4 style="font-family: 'Nunito', sans-serif; font-weight: 900; color: #fff; margin-bottom: 4px;">
+            {{ theater.movie.name }}
+          </h4>
+          <p style="color: var(--text-muted); margin-bottom: 6px; font-size: 0.875rem;">
+            <i class="fas fa-building me-2" style="color: var(--red)"></i>{{ theater.name }}
             &nbsp;|&nbsp;
-            <i class="fas fa-clock me-2" style="color:var(--accent)"></i>{{ theater.time|date:"g:i A, d M Y" }}
+            <i class="fas fa-clock me-2" style="color: var(--accent)"></i>{{ theater.time|date:"g:i A, d M Y" }}
           </p>
         </div>
         <div class="d-flex gap-2">
-          <span style="background:rgba(255,255,255,0.06);color:var(--text-light);border-radius:6px;padding:4px 12px;font-size:0.8rem;">2D</span>
-          <span style="background:rgba(255,255,255,0.06);color:var(--text-light);border-radius:6px;padding:4px 12px;font-size:0.8rem;">{{ seats|length }} Seats</span>
+          <span style="background: rgba(255,255,255,0.06); color: var(--text-light); border-radius: 6px; padding: 4px 12px; font-size: 0.8rem;">2D</span>
+          <span style="background: rgba(255,255,255,0.06); color: var(--text-light); border-radius: 6px; padding: 4px 12px; font-size: 0.8rem;">{{ seats|length }} Seats</span>
         </div>
       </div>
     </div>
 
     <div class="row g-4">
+
       <!-- SEAT MAP -->
       <div class="col-lg-8">
-        <div style="background:var(--card-bg);border-radius:14px;border:1px solid rgba(255,255,255,0.07);padding:1.5rem;">
-          <h5 class="text-center mb-4" style="font-family:'Nunito',sans-serif;font-weight:800;">
-            <i class="fas fa-couch me-2" style="color:var(--red)"></i>Choose Your Seats
+        <div style="background: var(--card-bg); border-radius: 14px; border: 1px solid rgba(255,255,255,0.07); padding: 1.5rem;">
+          <h5 class="text-center mb-4" style="font-family: 'Nunito', sans-serif; font-weight: 800;">
+            <i class="fas fa-couch me-2" style="color: var(--red)"></i>Choose Your Seats
           </h5>
 
           <!-- SCREEN -->
@@ -72,19 +231,25 @@
           <div class="screen-bar"></div>
 
           {% if error %}
-          <div class="alert alert-danger text-center mb-3">{{ error }}</div>
+            <div class="alert alert-danger text-center mb-3">{{ error }}</div>
           {% endif %}
 
           <form method="POST" id="seatForm">
             {% csrf_token %}
             <div class="seats-grid" id="seatsContainer">
               {% for seat in seats %}
-              <div class="seat {% if seat.is_booked %}booked{% endif %}" id="seat-wrap-{{ seat.id }}" onclick="{% if not seat.is_booked %}toggleSeat({{ seat.id }}){% endif %}">
-                {% if not seat.is_booked %}
-                  <input type="checkbox" name="seats" value="{{ seat.id }}" id="seat-{{ seat.id }}">
+                {% if seat.is_booked %}
+                  <div class="seat booked" id="seat-wrap-{{ seat.id }}">
+                {% elif seat.is_locked %}
+                  <div class="seat locked" id="seat-wrap-{{ seat.id }}">
+                {% else %}
+                  <div class="seat" id="seat-wrap-{{ seat.id }}" onclick="toggleSeat('{{ seat.id }}')">
                 {% endif %}
-                <span>{{ seat.seat_number }}</span>
-              </div>
+                  {% if not seat.is_booked and not seat.is_locked %}
+                    <input type="checkbox" name="seats" value="{{ seat.id }}" id="seat-{{ seat.id }}">
+                  {% endif %}
+                  <span>{{ seat.seat_number }}</span>
+                </div>
               {% endfor %}
             </div>
 
@@ -92,15 +257,19 @@
             <div class="d-flex justify-content-center gap-4 mb-4 flex-wrap">
               <div class="d-flex align-items-center gap-2">
                 <div class="legend-dot legend-available"></div>
-                <span style="font-size:0.8rem;color:var(--text-muted);">Available</span>
+                <span style="font-size: 0.8rem; color: var(--text-muted);">Available</span>
               </div>
               <div class="d-flex align-items-center gap-2">
                 <div class="legend-dot legend-selected"></div>
-                <span style="font-size:0.8rem;color:var(--text-muted);">Selected</span>
+                <span style="font-size: 0.8rem; color: var(--text-muted);">Selected</span>
               </div>
               <div class="d-flex align-items-center gap-2">
                 <div class="legend-dot legend-booked"></div>
-                <span style="font-size:0.8rem;color:var(--text-muted);">Booked</span>
+                <span style="font-size: 0.8rem; color: var(--text-muted);">Booked</span>
+              </div>
+              <div class="d-flex align-items-center gap-2">
+                <div class="legend-dot legend-locked"></div>
+                <span style="font-size: 0.8rem; color: var(--text-muted);">Locked</span>
               </div>
             </div>
 
@@ -109,7 +278,7 @@
               <button type="submit" class="btn btn-success px-5 py-2 fs-6" id="bookBtn" disabled>
                 <i class="fas fa-ticket-alt me-2"></i>Book Selected Seats
               </button>
-              <div id="selectedCount" class="mt-2" style="color:var(--text-muted);font-size:0.85rem;">No seats selected</div>
+              <div id="selectedCount" class="mt-2" style="color: var(--text-muted); font-size: 0.85rem;">No seats selected</div>
             </div>
           </form>
         </div>
@@ -118,39 +287,46 @@
       <!-- BOOKING SUMMARY -->
       <div class="col-lg-4">
         <div class="booking-summary">
-          <h6 style="font-family:'Nunito',sans-serif;font-weight:800;color:#fff;margin-bottom:1rem;">
-            <i class="fas fa-receipt me-2" style="color:var(--red)"></i>Booking Summary
+          <h6 style="font-family: 'Nunito', sans-serif; font-weight: 800; color: #fff; margin-bottom: 1rem;">
+            <i class="fas fa-receipt me-2" style="color: var(--red)"></i>Booking Summary
           </h6>
           <div class="summary-item">
-            <span style="color:var(--text-muted);">Movie</span>
-            <span style="color:#fff;font-weight:600;text-align:right;max-width:55%;">{{ theater.movie.name }}</span>
+            <span style="color: var(--text-muted);">Movie</span>
+            <span style="color: #fff; font-weight: 600; text-align: right; max-width: 55%;">{{ theater.movie.name }}</span>
           </div>
           <div class="summary-item">
-            <span style="color:var(--text-muted);">Theatre</span>
-            <span style="color:#fff;font-weight:500;text-align:right;max-width:55%;">{{ theater.name }}</span>
+            <span style="color: var(--text-muted);">Theatre</span>
+            <span style="color: #fff; font-weight: 500; text-align: right; max-width: 55%;">{{ theater.name }}</span>
           </div>
           <div class="summary-item">
-            <span style="color:var(--text-muted);">Date & Time</span>
-            <span style="color:#fff;font-weight:500;">{{ theater.time|date:"d M, g:i A" }}</span>
+            <span style="color: var(--text-muted);">Date & Time</span>
+            <span style="color: #fff; font-weight: 500;">{{ theater.time|date:"d M, g:i A" }}</span>
           </div>
           <div class="summary-item">
-            <span style="color:var(--text-muted);">Seats</span>
-            <span id="summarySeats" style="color:var(--accent);font-weight:600;">None</span>
+            <span style="color: var(--text-muted);">Seats</span>
+            <span id="summarySeats" style="color: var(--accent); font-weight: 600;">None</span>
           </div>
           <div class="summary-item">
-            <span style="color:var(--text-muted);">Tickets</span>
-            <span id="summaryCount" style="color:#fff;font-weight:600;">0</span>
+            <span style="color: var(--text-muted);">Tickets</span>
+            <span id="summaryCount" style="color: #fff; font-weight: 600;">0</span>
           </div>
-          <div class="mt-3 p-2 rounded" style="background:rgba(42,157,143,0.1);border:1px solid rgba(42,157,143,0.2);">
-            <div style="font-size:0.78rem;color:var(--text-muted);">
-              <i class="fas fa-shield-halved me-1" style="color:var(--success)"></i>Secured by BookMySeat
+          <div class="summary-item">
+    <span style="color: var(--text-muted);">Lock Timer</span>
+    <span id="timer" style="color:#ffc107;font-weight:600;">
+        02:00
+    </span>
+</div>
+          <div class="mt-3 p-2 rounded" style="background: rgba(42,157,143,0.1); border: 1px solid rgba(42,157,143,0.2);">
+            <div style="font-size: 0.78rem; color: var(--text-muted);">
+              <i class="fas fa-shield-halved me-1" style="color: var(--success)"></i>Secured by BookMySeat
             </div>
-            <div style="font-size:0.78rem;color:var(--text-muted);margin-top:4px;">
-              <i class="fas fa-circle-info me-1" style="color:var(--accent)"></i>Non-cancellable booking
+            <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 4px;">
+              <i class="fas fa-circle-info me-1" style="color: var(--accent)"></i>Non-cancellable booking
             </div>
           </div>
         </div>
       </div>
+
     </div>
   </div>
 </div>
@@ -158,22 +334,53 @@
 
 {% block extra_js %}
 <script>
+ 
   let selected = [];
+  let timeLeft = 120;
 
   function toggleSeat(id) {
     const wrap = document.getElementById('seat-wrap-' + id);
     const checkbox = document.getElementById('seat-' + id);
     const idx = selected.indexOf(id);
+
     if (idx === -1) {
-      selected.push(id);
-      wrap.classList.add('selected');
-      checkbox.checked = true;
-    } else {
-      selected.splice(idx, 1);
-      wrap.classList.remove('selected');
-      checkbox.checked = false;
+        fetch(`/movies/lock-seat/${id}/`)
+.then(response => response.json())
+.then(data => {
+
+    if(data.success){
+        alert("Seat Locked");
+        timeLeft = 120;
+        selected.push(id);
+        wrap.classList.add('selected');
+        checkbox.checked = true;
+
+        updateSummary();
+
+    }else{
+
+        alert(data.message);
+
     }
-    updateSummary();
+
+});
+    } else {
+
+    fetch(`/movies/unlock-seat/${id}/`)
+    .then(response => response.json())
+    .then(data => {
+
+        selected.splice(idx, 1);
+
+        wrap.classList.remove('selected');
+
+        checkbox.checked = false;
+
+        updateSummary();
+
+    });
+
+}
   }
 
   function updateSummary() {
@@ -197,5 +404,34 @@
       summaryCount.textContent = '0';
     }
   }
+
+setInterval(function(){
+
+    if(selected.length > 0){
+
+        timeLeft--;
+
+        let minutes = Math.floor(timeLeft / 60);
+        let seconds = timeLeft % 60;
+
+        document.getElementById('timer').innerText =
+            String(minutes).padStart(2,'0') +
+            ":" +
+            String(seconds).padStart(2,'0');
+
+        if(timeLeft <= 0){
+
+            alert("Seat lock expired");
+
+            selected = [];
+
+            window.location.reload();
+
+        }
+
+    }
+
+},1000);
+
 </script>
 {% endblock %}

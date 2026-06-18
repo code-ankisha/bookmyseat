@@ -1,0 +1,155 @@
+{% extends "users/basic.html" %}
+
+{% block title %}Secure Payment{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-6">
+
+            <div class="card shadow-lg border-0 rounded-4">
+
+                <div class="card-header bg-danger text-white">
+                    <h3 class="mb-0">
+                        🎟 Complete Your Booking
+                    </h3>
+                </div>
+
+                <div class="card-body">
+
+                    <h4>{{ theater.movie.name }}</h4>
+
+                    <hr>
+
+                    <p>
+                        <strong>Theatre:</strong>
+                        {{ theater.name }}
+                    </p>
+
+                    <p>
+                        <strong>Seats:</strong>
+                        {{ seat_numbers }}
+                    </p>
+
+                    <p>
+                        <strong>Amount:</strong>
+                        ₹{{ display_amount }}
+                    </p>
+
+                    <hr>
+
+                   <button
+    id="rzp-button"
+    class="btn btn-danger btn-lg w-100">
+
+    Pay ₹{{ display_amount }}
+
+</button>
+
+<hr>
+
+<a href="{% url 'payment_success_demo' %}"
+   class="btn btn-success btn-lg w-100 mt-2">
+
+    Demo Payment Success (Testing Only)
+
+</a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+
+var options = {
+
+    key: "{{ razorpay_key }}",
+
+    amount: "{{ amount }}",
+
+    currency: "INR",
+
+    name: "BookMySeat",
+
+    description: "Movie Ticket Booking",
+
+    order_id: "{{ razorpay_order_id }}",
+
+    redirect: true,
+
+    prefill: {
+        name: "{{ request.user.username }}",
+        email: "test@example.com",
+        contact: "9999999999"
+    },
+
+    method: {
+        upi: true,
+        card: true,
+        netbanking: true,
+        wallet: true
+    },
+
+    theme: {
+        color: "#dc3545"
+    },
+
+    modal: {
+    ondismiss: function() {
+        window.location.href =
+        "/movies/payment-cancelled/";
+    }
+},
+
+
+handler: function(response){
+
+    window.location.href =
+    "/movies/payment-success/?payment_id="
+    + response.razorpay_payment_id
+    + "&order_id="
+    + response.razorpay_order_id
+    + "&signature="
+    + response.razorpay_signature;
+
+}
+    
+
+};
+
+var rzp = new Razorpay(options);
+
+rzp.on('payment.failed', function(response){
+
+    alert(
+        "Payment Failed: " +
+        response.error.description
+    );
+
+    window.location.href =
+    "/movies/payment-failed/";
+
+});
+
+document.getElementById("rzp-button").onclick = function(e){
+
+    rzp.open();
+
+    e.preventDefault();
+
+};
+
+</script>
+
+{% endblock %}

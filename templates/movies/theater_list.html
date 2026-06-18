@@ -99,7 +99,11 @@
         </div>
         <div class="text-end" style="font-size:0.8rem;color:var(--text-muted);">
           {% with avail=theater.available_seats_count %}
-          <span style="color:{% if avail < 10 %}var(--red){% else %}var(--success){% endif %}">
+         {% if avail < 10 %}
+<span style="color:var(--red);">
+{% else %}
+<span style="color:var(--success);">
+{% endif %}
             <i class="fas fa-chair me-1"></i>{{ avail }} seats available
           </span>
           {% endwith %}
@@ -109,7 +113,7 @@
       <!-- SHOWTIME -->
       <div class="d-flex gap-2 flex-wrap">
         <a href="{% url 'book_seats' theater.id %}" class="time-btn">
-          <i class="fas fa-clock me-1" style="color:var(--accent)"></i>
+          <i class="fas fa-clock me-1" style="color:var(--accent);"></i>
           {{ theater.time|date:"g:i A" }}
           <div style="font-size:0.7rem;color:var(--text-muted);font-weight:400;">{{ theater.time|date:"d M, D" }}</div>
         </a>

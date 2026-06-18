@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Booking Confirmation</title>
+</head>
+<body>
+
+    <h2>🎉 Booking Confirmed</h2>
+
+    <p>Hello {{ username }},</p>
+
+    <p>Your booking has been confirmed successfully.</p>
+
+    <table border="1" cellpadding="10">
+        <tr>
+            <td><b>Movie</b></td>
+            <td>{{ movie_name }}</td>
+        </tr>
+
+        <tr>
+            <td><b>Theater</b></td>
+            <td>{{ theater_name }}</td>
+        </tr>
+
+        <tr>
+            <td><b>Seat</b></td>
+            <td>{{ seat_number }}</td>
+        </tr>
+
+        <tr>
+            <td><b>Show Time</b></td>
+            <td>{{ show_time }}</td>
+        </tr>
+
+        <tr>
+            <td><b>Payment ID</b></td>
+            <td>{{ payment_id }}</td>
+        </tr>
+    </table>
+
+    <br>
+
+    <p>Thank you for choosing BookMySeat.</p>
+
+</body>
+</html>

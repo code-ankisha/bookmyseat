@@ -6,52 +6,312 @@
   .search-wrap { background:var(--card-bg); border-radius:14px; padding:1.5rem; border:1px solid rgba(255,255,255,0.07); margin-bottom:2rem; }
   .filter-select option { background:#1a1a2e; color:#fff; }
   .empty-state { background:var(--card-bg); border-radius:16px; padding:4rem 2rem; text-align:center; border:1px solid rgba(255,255,255,0.06); }
-  .results-count { color:var(--text-muted); font-size:0.875rem; }
+
+  /* TASK 1: TRAILER THUMBNAIL */
+  .trailer-thumb-wrap {
+    position: relative;
+    margin-top: 12px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #000;
+    cursor: pointer;
+  }
+  .trailer-thumb-wrap img {
+    width: 100%; height: 160px;
+    object-fit: cover; display: block;
+    filter: brightness(0.7);
+    transition: filter 0.3s, transform 0.3s;
+  }
+  .trailer-thumb-wrap:hover img {
+    filter: brightness(0.9);
+    transform: scale(1.03);
+  }
+  .play-overlay {
+    position: absolute; top:50%; left:50%;
+    transform: translate(-50%,-50%);
+    width:56px; height:56px;
+    background: rgba(230,57,70,0.92);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 4px 20px rgba(230,57,70,0.5);
+    pointer-events: none;
+  }
+  .trailer-thumb-wrap:hover .play-overlay {
+    transform: translate(-50%,-50%) scale(1.15);
+  }
+  .play-overlay i { color:#fff; font-size:1.2rem; margin-left:4px; }
+  .yt-label {
+    position: absolute; bottom:8px; left:8px;
+    background: rgba(0,0,0,0.8); color:#fff;
+    border-radius:5px; padding:2px 8px;
+    font-size:0.72rem; font-weight:600;
+  }
+  .watch-trailer-btn {
+    display: flex; align-items: center;
+    justify-content: center; gap: 6px;
+    background: transparent;
+    border: 1px solid var(--red);
+    color: var(--red); border-radius: 8px;
+    font-weight: 600; font-size: 0.82rem;
+    padding: 7px 14px; transition: all 0.2s;
+    width: 100%; margin-top: 8px;
+    cursor: pointer;
+  }
+  .watch-trailer-btn:hover { background: var(--red); color: #fff; }
+  .trailer-fallback {
+    margin-top: 10px; padding: 10px;
+    text-align: center; border-radius: 8px;
+    background: rgba(255,255,255,0.04);
+    color: var(--text-muted); font-size: 0.8rem;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+
+  /* TASK 1: MODAL PLAYER */
+  .trailer-modal-overlay {
+    display: none;
+    position: fixed;
+    top:0; left:0; right:0; bottom:0;
+    background: rgba(0,0,0,0.92);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .trailer-modal-overlay.active { display: flex; }
+  .trailer-modal {
+    width: 100%; max-width: 860px;
+    position: relative;
+    animation: fadeInScale 0.25s ease;
+  }
+  @keyframes fadeInScale {
+    from { opacity:0; transform:scale(0.95); }
+    to   { opacity:1; transform:scale(1); }
+  }
+  .modal-header {
+    display: flex; justify-content: space-between;
+    align-items: center; margin-bottom: 12px;
+  }
+  .modal-title {
+    color: #fff; font-family:'Nunito',sans-serif;
+    font-weight: 800; font-size: 1.1rem;
+  }
+  .modal-close-btn {
+    background: rgba(255,255,255,0.1);
+    border: none; color: #fff;
+    width: 36px; height: 36px;
+    border-radius: 50%; cursor: pointer;
+    font-size: 1rem; transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .modal-close-btn:hover { background: var(--red); }
+
+  /* TASK 1: 16:9 responsive video container */
+  .video-container {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0; overflow: hidden;
+    background: #000;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+  }
+  .video-container iframe {
+    position: absolute;
+    top:0; left:0;
+    width:100%; height:100%;
+    border: none; border-radius: 12px;
+  }
+
+  .filter-box{
+    background:#1f2937;
+    border-radius:10px;
+    padding:10px;
+    color:white;
+    height:180px;
+    overflow-y:auto;
+    border:1px solid rgba(255,255,255,0.08);
+}
+
+.filter-box input{
+    margin-right:6px;
+}
+
+.genre-count-badge{
+    background: rgba(230,57,70,0.15);
+    color:#ff6b6b;
+    border:1px solid rgba(230,57,70,0.35);
+    padding:8px 14px;
+    border-radius:20px;
+    font-size:0.85rem;
+    font-weight:600;
+    display:inline-block;
+    margin:4px;
+}
+
+
+.genre-count-badge:hover{
+    background:rgba(230,57,70,0.25);
+}
+.pagination .page-link{
+    background:#1f2937;
+    color:white;
+    border:1px solid rgba(255,255,255,0.08);
+}
+
+.pagination .page-link:hover{
+    background:#e63946;
+    color:white;
+    border-color:#e63946;
+}
+
+.pagination .page-item.active .page-link{
+    background:#e63946;
+    border-color:#e63946;
+    color:white;
+}
+
+.pagination .page-item.disabled .page-link{
+    background:#111827;
+    color:#6c757d;
+    border-color:#333;
+}
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="container py-4">
+
   <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
     <h1 style="font-family:'Nunito',sans-serif;font-weight:900;font-size:1.8rem;">
       <i class="fas fa-clapperboard me-2" style="color:var(--red)"></i>All Movies
     </h1>
-    <span class="results-count">{{ movies|length }} movie{{ movies|length|pluralize }} found</span>
+    <span style="color:var(--text-muted);font-size:0.875rem;">
+      {{ movies|length }} movie{{ movies|length|pluralize }} found
+    </span>
   </div>
 
-  <!-- SEARCH & FILTER -->
+  <!-- SEARCH -->
   <div class="search-wrap">
     <form method="GET" action="{% url 'movie_list' %}">
       <div class="row g-3">
-        <div class="col-md-6">
-          <div class="input-group">
-            <span class="input-group-text"><i class="fas fa-search"></i></span>
-            <input type="text" class="form-control" name="search" placeholder="Search movies, cast..." value="{{ search_query }}">
-          </div>
-        </div>
+        <div class="col-md-4">
+  <div class="input-group">
+    <span class="input-group-text">
+      <i class="fas fa-search"></i>
+    </span>
+
+    <input
+      type="text"
+      class="form-control"
+      name="search"
+      placeholder="Search movies, cast..."
+      value="{{ search_query }}"
+    >
+  </div>
+</div>
+      <div class="col-md-2">
+  <div class="filter-box">
+    <h6 class="mb-2 text-light">Genres</h6>
+
+    {% for genre in genres %}
+      {% if genre %}
+      <div>
+        <input
+          type="checkbox"
+          name="genre"
+          value="{{ genre }}"
+          {% if genre in selected_genres %}checked{% endif %}
+        >
+        {{ genre }}
+      </div>
+      {% endif %}
+    {% endfor %}
+
+  </div>
+</div>
+
+<div class="col-md-2">
+  <div class="filter-box">
+
+    <h6 class="mb-2 text-light">Languages</h6>
+
+    {% for language in languages %}
+      {% if language %}
+      <div>
+        <input
+          type="checkbox"
+          name="language"
+          value="{{ language }}"
+          {% if language in selected_languages %}checked{% endif %}
+        >
+        {{ language }}
+      </div>
+      {% endif %}
+    {% endfor %}
+
+  </div>
+</div>
+
         <div class="col-md-2">
-          <select name="genre" class="form-select filter-select">
-            <option value="">All Genres</option>
-            {% for genre in genres %}
-              {% if genre %}<option value="{{ genre }}" {% if genre_filter == genre %}selected{% endif %}>{{ genre }}</option>{% endif %}
-            {% endfor %}
-          </select>
-        </div>
-        <div class="col-md-2">
-          <select name="language" class="form-select filter-select">
-            <option value="">All Languages</option>
-            {% for lang in languages %}
-              {% if lang %}<option value="{{ lang }}" {% if language_filter == lang %}selected{% endif %}>{{ lang }}</option>{% endif %}
-            {% endfor %}
-          </select>
-        </div>
-        <div class="col-md-2 d-flex gap-2">
+  <div class="filter-box">
+    <h6 class="mb-2 text-light">Sort</h6>
+
+    <select name="sort" class="form-select filter-select">
+
+    <option value="">Sort By</option>
+
+    <option value="rating_desc"
+      {% if sort_by == "rating_desc" %}selected{% endif %}>
+      Rating High-Low
+    </option>
+
+    <option value="rating_asc"
+      {% if sort_by == "rating_asc" %}selected{% endif %}>
+      Rating Low-High
+    </option>
+
+    <option value="name_asc"
+      {% if sort_by == "name_asc" %}selected{% endif %}>
+      A-Z
+    </option>
+
+    <option value="name_desc"
+      {% if sort_by == "name_desc" %}selected{% endif %}>
+      Z-A
+    </option>
+
+
+  </select>
+</div>
+</div>
+
+        <div class="col-md-2 d-flex align-items-end gap-2">
           <button type="submit" class="btn btn-primary flex-grow-1">Search</button>
-          <a href="{% url 'movie_list' %}" class="btn btn-outline-secondary" title="Reset"><i class="fas fa-rotate-right"></i></a>
+          <a href="{% url 'movie_list' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-rotate-right"></i>
+          </a>
         </div>
       </div>
     </form>
   </div>
+
+  <!-- GENRE COUNTS -->
+<div class="mb-4">
+  <h5 style="color:white;">Genre Counts</h5>
+
+  <div class="d-flex flex-wrap gap-2 mt-2">
+
+    {% for item in genre_counts %}
+      {% if item.genre %}
+      <span class="genre-count-badge">
+    {{ item.genre }} ({{ item.total }})
+</span>
+      {% endif %}
+    {% endfor %}
+
+  </div>
+</div>
+
 
   <!-- MOVIE GRID -->
   {% if movies %}
@@ -59,41 +319,194 @@
     {% for movie in movies %}
     <div class="col-6 col-md-4 col-lg-3">
       <div class="movie-card h-100 d-flex flex-column">
-        <a href="{% url 'theater_list' movie.id %}" class="text-decoration-none">
+
+        <a href="{% url 'movie_detail' movie.id %}" class="text-decoration-none">
           <img src="{{ movie.image.url }}" alt="{{ movie.name }}" loading="lazy">
         </a>
+
         <div class="card-body d-flex flex-column" style="padding:14px;">
-          <a href="{% url 'theater_list' movie.id %}" class="text-decoration-none">
+          <a href="{% url 'movie_detail' movie.id %}" class="text-decoration-none">
             <div class="card-title">{{ movie.name }}</div>
           </a>
+
           <div class="d-flex gap-2 flex-wrap mb-2">
             <span class="rating-badge"><i class="fas fa-star me-1"></i>{{ movie.rating }}</span>
             {% if movie.genre %}<span class="genre-badge">{{ movie.genre }}</span>{% endif %}
           </div>
+
           {% if movie.description %}
           <p style="color:var(--text-muted);font-size:0.8rem;flex-grow:1;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">
             {{ movie.description }}
           </p>
           {% endif %}
-          <div class="d-flex justify-content-between mt-2" style="font-size:0.78rem;color:var(--text-muted);">
-            {% if movie.language %}<span><i class="fas fa-language me-1"></i>{{ movie.language }}</span>{% endif %}
-            {% if movie.duration %}<span><i class="fas fa-clock me-1"></i>{{ movie.duration_display }}</span>{% endif %}
+
+          <div class="d-flex justify-content-between mt-2"
+               style="font-size:0.78rem;color:var(--text-muted);">
+            {% if movie.language %}
+            <span><i class="fas fa-language me-1"></i>{{ movie.language }}</span>
+            {% endif %}
+            {% if movie.duration %}
+            <span><i class="fas fa-clock me-1"></i>{{ movie.duration_display }}</span>
+            {% endif %}
           </div>
-          <a href="{% url 'theater_list' movie.id %}" class="btn btn-primary btn-sm mt-3 w-100">
-            <i class="fas fa-ticket-alt me-1"></i>Book Tickets
+
+          <!-- 
+               TASK 1: TRAILER SECTIOn
+                -->
+          {% if movie.safe_trailer %}
+          {% with vid=movie.get_video_id %}
+
+            <!-- Thumbnail with play button -->
+            <div class="trailer-thumb-wrap"
+                 onclick="openTrailer('{{ movie.safe_trailer }}', '{{ movie.name }}')">
+              <img
+                src="https://img.youtube.com/vi/{{ vid }}/maxresdefault.jpg"
+                alt="{{ movie.name }} trailer"
+                loading="lazy"
+                onerror="this.src='https://img.youtube.com/vi/{{ vid }}/hqdefault.jpg'"
+              >
+              <div class="play-overlay">
+                <i class="fas fa-play"></i>
+              </div>
+              <div class="yt-label">
+                <i class="fab fa-youtube me-1"></i>Trailer
+              </div>
+            </div>
+
+            <!-- Watch Trailer Button -->
+            <button class="watch-trailer-btn"
+                    onclick="openTrailer('{{ movie.safe_trailer }}', '{{ movie.name }}')">
+              <i class="fab fa-youtube"></i> Watch Trailer
+            </button>
+
+          {% endwith %}
+          {% else %}
+            <!-- TASK 1: Fallback -->
+            <div class="trailer-fallback">
+              <i class="fas fa-circle-info me-1"></i>
+              Trailer not available
+            </div>
+          {% endif %}
+          <!-- END TASK 1 -->
+
+          <a href="{% url 'theater_list' movie.id %}"
+             class="btn btn-primary btn-sm mt-3 w-100">
+            <i class="fas fa-ticket-alt me-1"></i> Book Tickets
           </a>
         </div>
       </div>
     </div>
     {% endfor %}
-  </div>
+   
+</div>
+
+<nav class="mt-4">
+  <ul class="pagination justify-content-center">
+
+    {% if movies.has_previous %}
+    <li class="page-item">
+      <a class="page-link"
+         href="?page={{ movies.previous_page_number }}">
+        Previous
+      </a>
+    </li>
+    {% endif %}
+
+    <li class="page-item active">
+    <span class="page-link">
+        {{ movies.number }}
+    </span>
+</li>
+
+    {% if movies.has_next %}
+    <li class="page-item">
+      <a class="page-link"
+         href="?page={{ movies.next_page_number }}">
+        Next
+      </a>
+    </li>
+    {% endif %}
+
+  </ul>
+</nav>
+
   {% else %}
   <div class="empty-state">
     <i class="fas fa-film fa-4x mb-3" style="color:var(--red);opacity:0.4"></i>
     <h4 style="color:var(--text-muted);">No movies found</h4>
-    <p style="color:var(--text-muted);font-size:0.875rem;">Try a different search or clear the filters.</p>
     <a href="{% url 'movie_list' %}" class="btn btn-primary mt-2">Clear Filters</a>
   </div>
   {% endif %}
+
 </div>
+
+<!-- TASK 1: TRAILER MODAL POPUP -->
+<div class="trailer-modal-overlay"
+     id="trailerModal"
+     onclick="handleOverlayClick(event)">
+  <div class="trailer-modal" id="trailerModalBox">
+    <div class="modal-header">
+      <div class="modal-title" id="modalMovieName"></div>
+      <button class="modal-close-btn" onclick="closeTrailer()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="video-container">
+      <iframe
+        id="trailerIframe"
+        src=""
+        title="Movie Trailer"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen>
+      </iframe>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  /*
+    TASK 1: LAZY LOADING + INLINE MODAL
+ 
+   */
+  function openTrailer(trailerUrl, movieName) {
+    // Task 1: Security - validate URL before injecting
+    if (!trailerUrl || !trailerUrl.includes('youtube.com/embed/')) {
+      console.warn('BookMySeat: Invalid trailer URL blocked for security.');
+      return;
+    }
+
+    const modal  = document.getElementById('trailerModal');
+    const iframe = document.getElementById('trailerIframe');
+    const title  = document.getElementById('modalMovieName');
+
+    // Task 1: Lazy load - set iframe src only on click
+    iframe.src = trailerUrl + '&autoplay=1&rel=0&modestbranding=1';
+    title.textContent = movieName + ' — Official Trailer';
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeTrailer() {
+    const modal  = document.getElementById('trailerModal');
+    const iframe = document.getElementById('trailerIframe');
+    modal.classList.remove('active');
+    iframe.src = ''; // Task 1: Stop video on close
+    document.body.style.overflow = '';
+  }
+
+  // Close modal when clicking outside
+  function handleOverlayClick(event) {
+    if (event.target === document.getElementById('trailerModal')) {
+      closeTrailer();
+    }
+  }
+
+  // Close on Escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeTrailer();
+  });
+</script>
 {% endblock %}

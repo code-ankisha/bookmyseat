@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+
+    <style>
+        body{
+            font-family:Arial;
+            background:#111827;
+            color:white;
+            padding:30px;
+        }
+
+        .card{
+            background:#1f2937;
+            padding:20px;
+            border-radius:10px;
+            margin-bottom:20px;
+        }
+
+        h1{
+            color:#22c55e;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+        }
+
+        th,td{
+            padding:10px;
+            border-bottom:1px solid #333;
+            text-align:left;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>Admin Analytics Dashboard</h1>
+
+<div class="card">
+    <h2>Total Bookings</h2>
+    <h3>{{ total_bookings }}</h3>
+</div>
+
+<div class="card">
+    <h2>Daily Revenue</h2>
+    <h3>₹ {{ daily_revenue }}</h3>
+</div>
+
+<div class="card">
+    <h2>Weekly Revenue</h2>
+    <h3>₹ {{ weekly_revenue }}</h3>
+</div>
+
+<div class="card">
+    <h2>Monthly Revenue</h2>
+    <h3>₹ {{ monthly_revenue }}</h3>
+</div>
+
+<div class="card">
+    <h2>Cancellation Rate</h2>
+
+    <p>Cancelled Bookings: {{ cancelled_bookings }}</p>
+
+    <h3>{{ cancellation_rate }}%</h3>
+</div>
+
+<div class="card">
+    <h2>Most Popular Movies</h2>
+
+    <table>
+        <tr>
+            <th>Movie</th>
+            <th>Bookings</th>
+        </tr>
+
+        {% for movie in popular_movies %}
+        <tr>
+            <td>{{ movie.name }}</td>
+            <td>{{ movie.total_bookings }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<div class="card">
+    <h2>Busiest Theaters (Occupancy %)</h2>
+
+    <table>
+        <tr>
+            <th>Theater</th>
+            <th>Occupancy</th>
+        </tr>
+
+        {% for theater in theater_occupancy %}
+        <tr>
+            <td>{{ theater.name }}</td>
+            <td>{{ theater.occupancy }}%</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<div class="card">
+    <h2>Peak Booking Hours</h2>
+
+    <table>
+        <tr>
+            <th>Hour</th>
+            <th>Bookings</th>
+        </tr>
+
+        {% for item in peak_hours %}
+        <tr>
+            <td>{{ item.hour }}:00</td>
+            <td>{{ item.total }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+</body>
+</html>
