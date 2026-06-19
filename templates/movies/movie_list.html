@@ -7,7 +7,7 @@
   .filter-select option { background:#1a1a2e; color:#fff; }
   .empty-state { background:var(--card-bg); border-radius:16px; padding:4rem 2rem; text-align:center; border:1px solid rgba(255,255,255,0.06); }
 
-  /* TASK 1: TRAILER THUMBNAIL */
+  /* TASK 1: Trsiler thumbnail*/
   .trailer-thumb-wrap {
     position: relative;
     margin-top: 12px;
@@ -67,7 +67,7 @@
     border: 1px solid rgba(255,255,255,0.06);
   }
 
-  /* TASK 1: MODAL PLAYER */
+  /* TASK 1: Modal Player */
   .trailer-modal-overlay {
     display: none;
     position: fixed;
@@ -190,7 +190,7 @@
     </span>
   </div>
 
-  <!-- SEARCH -->
+  <!-- Search -->
   <div class="search-wrap">
     <form method="GET" action="{% url 'movie_list' %}">
       <div class="row g-3">
@@ -295,7 +295,7 @@
     </form>
   </div>
 
-  <!-- GENRE COUNTS -->
+  <!-- Genre Counts -->
 <div class="mb-4">
   <h5 style="color:white;">Genre Counts</h5>
 
@@ -313,7 +313,7 @@
 </div>
 
 
-  <!-- MOVIE GRID -->
+  <!-- Movie Grid -->
   {% if movies %}
   <div class="row g-4">
     {% for movie in movies %}
@@ -351,7 +351,7 @@
           </div>
 
           <!-- 
-               TASK 1: TRAILER SECTIOn
+               TASK 1: Trailer Section
                 -->
           {% if movie.safe_trailer %}
           {% with vid=movie.get_video_id %}
@@ -387,7 +387,7 @@
               Trailer not available
             </div>
           {% endif %}
-          <!-- END TASK 1 -->
+         
 
           <a href="{% url 'theater_list' movie.id %}"
              class="btn btn-primary btn-sm mt-3 w-100">
@@ -440,7 +440,7 @@
 
 </div>
 
-<!-- TASK 1: TRAILER MODAL POPUP -->
+<!-- TASK 1: Trailer Modal Popup -->
 <div class="trailer-modal-overlay"
      id="trailerModal"
      onclick="handleOverlayClick(event)">
@@ -468,7 +468,7 @@
 {% block extra_js %}
 <script>
   /*
-    TASK 1: LAZY LOADING + INLINE MODAL
+    TASK 1: Lazy Loading + Inline modal
  
    */
   function openTrailer(trailerUrl, movieName) {

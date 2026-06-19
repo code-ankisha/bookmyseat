@@ -102,7 +102,7 @@ MESSAGE_TAGS = {
     messages.ERROR: 'alert-danger',
 }
 
-# CELERY CONFIG
+# Celery confuguration
 
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
 
@@ -114,7 +114,7 @@ CELERY_RESULT_SERIALIZER = 'json'
 
 CELERY_TIMEZONE = 'Asia/Kolkata'
 
-# EMAIL CONFIG
+# email configuration
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
